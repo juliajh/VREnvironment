@@ -204,6 +204,5 @@ public class AccountTest : MonoBehaviour
 
     public void chooseChar()
     {
-        Debug.Log(EventSystem.current.currentSelectedGameObject.name);
     }
 }
