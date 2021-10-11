@@ -51,8 +51,8 @@ public class SqlDB : MonoBehaviour
     [SerializeField]
     private GameObject cameraRig;
 
-    private List<GameObject> characters;
-    private List<string> accounts;
+    public List<GameObject> characters;
+    public List<string> accounts;
     public string cspublic = @"Data Source=DESKTOP-DHIREQV,1433;Initial Catalog=weather;User ID=sa;Password=dankook512@;";
     public static string userid = "";
     private bool succeed=true;
@@ -72,6 +72,8 @@ public class SqlDB : MonoBehaviour
     public static List<FarmPlant> farmplantList = new List<FarmPlant>();
 
     //weather table in the PlantEnvironment Script//
+    public static int waterpolluted = 0;
+    public static int airpolluted = 0;
 
     //for VRMenuController
     public static bool readingDone;
@@ -89,11 +91,14 @@ public class SqlDB : MonoBehaviour
 
     void Update()
     {
-        for (int k = 0; k < characters.Count; k++)
+        if (characters.Count > 0)
         {
-            if (Vector3.Distance(cameraRig.transform.position, characters[k].transform.position) < 3.2f)
+            for (int k = 0; k < characters.Count; k++)
             {
-                StartCoroutine(Login(accounts[k]));
+                if (Vector3.Distance(cameraRig.transform.position, characters[k].transform.position) < 3.7f)
+                {
+                    StartCoroutine(Login(accounts[k]));
+                }
             }
         }
     }
@@ -147,8 +152,9 @@ public class SqlDB : MonoBehaviour
 
                     }
                 }
-                Debug.Log("accounts name [" + accounts.IndexOf(name) + "] : " + accounts);
-                player = Instantiate(Resources.Load<GameObject>("Prefabs/characters/character_" + num), new Vector3(4 * i, 0, 20), Quaternion.identity) as GameObject;
+
+                player = Instantiate(Resources.Load<GameObject>("Prefabs/characters/character_" + num), new Vector3(4 * i, 0, 11), Quaternion.identity) as GameObject;
+                player.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
                 player.transform.GetChild(0).GetComponent<TextMesh>().text = accounts[i];
                 characters.Add(player);
             }
@@ -174,107 +180,112 @@ public class SqlDB : MonoBehaviour
                 succeed = false;
             }
 
-            yield return new WaitForSeconds(3f);
+            //yield return new WaitForSeconds(3f);
 
             if (succeed)
             {
-                StartCoroutine(Main());
+                //StartCoroutine(Main());
+                yield return StartCoroutine(DBParsing("sql_player"));
+                yield return StartCoroutine(DBParsing("sql_savedplant"));
+                yield return StartCoroutine(DBParsing("sql_puzzle"));
+                yield return StartCoroutine(DBParsing("sql_farmplant"));
+                readingDone = true;
                 SceneManager.LoadScene("MainHouse");
             }
         }
+        yield return null;
     }
 
-    IEnumerator Main()
-    {
-        yield return StartCoroutine(DBParsing("sql_player"));
-        yield return StartCoroutine(DBParsing("sql_savedplant"));
-        yield return StartCoroutine(DBParsing("sql_puzzle"));
-        yield return StartCoroutine(DBParsing("sql_farmplant"));
-        readingDone = true;
-    }
 
     IEnumerator DBParsing(string p)
     {
         using (SqlConnection Sqlconn = new SqlConnection())
         {
             Sqlconn.ConnectionString = cspublic;
-            Sqlconn.Open();
-
-            if (p == "sql_savedplant")
+            try
             {
-                SavedplantList.Clear();
-                using (SqlCommand cmd = new SqlCommand("USE[weather_" + userid + "];SELECT * FROM savedplant_table", Sqlconn))
+                Sqlconn.Open();
+
+                if (p == "sql_savedplant")
                 {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    SavedplantList.Clear();
+                    using (SqlCommand cmd = new SqlCommand("USE[weather_" + userid + "];SELECT * FROM savedplant_table", Sqlconn))
                     {
-                        string a = reader["plantName"].ToString();
-                        string b = reader["num"].ToString();
-                        SavedplantList.Add(new SavedPlant(int.Parse(a), int.Parse(b)));
-                    }
-
-                    reader.Close();
-                }
-            }
-
-            else if (p == "sql_player")
-            {
-
-                using (SqlCommand cmd = new SqlCommand("USE[weather_" + userid + "];SELECT * FROM player_table", Sqlconn))
-                {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        coin = int.Parse(reader["Coin"].ToString());
-                        wateringcanNum = int.Parse(reader["WateringCanNum"].ToString());
-                    }
-
-                    reader.Close();
-                }
-                
-            }
-            else if (p == "sql_puzzle")
-            {
-                puzzleList.Clear();
-                using (SqlCommand cmd = new SqlCommand("USE[weather_" + userid + "];SELECT * FROM puzzle_table", Sqlconn))
-                {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        int a = int.Parse(reader["name"].ToString());
-                        int b = int.Parse(reader["num"].ToString());
-                        //read 에 관한 내용 
-                        if (a != 16)
+                        SqlDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
                         {
-                            puzzleList.Add(b);
+                            string a = reader["plantName"].ToString();
+                            string b = reader["num"].ToString();
+                            SavedplantList.Add(new SavedPlant(int.Parse(a), int.Parse(b)));
                         }
-                        else
-                            pictNum = b;
-                    }
 
-                    reader.Close();
+                        reader.Close();
+                    }
                 }
-                
-            }
-            else if (p == "sql_farmplant")
-            {
-                farmplantList.Clear();
-                using (SqlCommand cmd = new SqlCommand("USE[weather]; SELECT * FROM farmplant_table", Sqlconn))
+
+                else if (p == "sql_player")
                 {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+
+                    using (SqlCommand cmd = new SqlCommand("USE[weather_" + userid + "];SELECT * FROM player_table", Sqlconn))
                     {
-                        farmplantList.Add(new FarmPlant(int.Parse(reader["Name"].ToString()), float.Parse(reader["x"].ToString()), float.Parse(reader["z"].ToString()),
-                            int.Parse(reader["size"].ToString()), int.Parse(reader["per"].ToString()), int.Parse(reader["polluted"].ToString()), reader["master"].ToString()));
+                        SqlDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            coin = int.Parse(reader["Coin"].ToString());
+                            wateringcanNum = int.Parse(reader["WateringCanNum"].ToString());
+                        }
+
+                        reader.Close();
                     }
 
-                    reader.Close();
                 }
-                
+                else if (p == "sql_puzzle")
+                {
+                    puzzleList.Clear();
+                    using (SqlCommand cmd = new SqlCommand("USE[weather_" + userid + "];SELECT * FROM puzzle_table", Sqlconn))
+                    {
+                        SqlDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            int a = int.Parse(reader["name"].ToString());
+                            int b = int.Parse(reader["num"].ToString());
+                            //read 에 관한 내용 
+                            if (a != 16)
+                            {
+                                puzzleList.Add(b);
+                            }
+                            else
+                                pictNum = b;
+                        }
+
+                        reader.Close();
+                    }
+
+                }
+                else if (p == "sql_farmplant")
+                {
+                    farmplantList.Clear();
+                    using (SqlCommand cmd = new SqlCommand("USE[weather]; SELECT * FROM farmplant_table", Sqlconn))
+                    {
+                        SqlDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            farmplantList.Add(new FarmPlant(int.Parse(reader["Name"].ToString()), float.Parse(reader["x"].ToString()), float.Parse(reader["z"].ToString()),
+                                int.Parse(reader["size"].ToString()), int.Parse(reader["per"].ToString()), int.Parse(reader["polluted"].ToString()), reader["master"].ToString()));
+                        }
+
+                        reader.Close();
+                    }
+
+                }
+                Sqlconn.Close();
             }
-            Sqlconn.Close();
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
         }
-        yield return null;
+        yield return new WaitForSeconds(1.5f);
     }
 
 }

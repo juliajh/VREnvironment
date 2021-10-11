@@ -193,7 +193,7 @@ public class VRMenuController : MonoBehaviour
         //delete weather_table elements 
         SqlConnection Sqlconn = new SqlConnection(cspublic);
         Sqlconn.Open();
-        SqlCommand cmd = new SqlCommand("TRUNCATE TABLE weather_table", Sqlconn);
+        SqlCommand cmd = new SqlCommand("USE[weather];TRUNCATE TABLE weather_table;INSERT INTO weather_table(weather,rain,waterpolluted,airpolluted) VALUES('Clouds',0,"+SqlDB.waterpolluted+","+SqlDB.airpolluted+");", Sqlconn);
         cmd.ExecuteNonQuery();
         Sqlconn.Close();
 
@@ -218,7 +218,7 @@ public class VRMenuController : MonoBehaviour
             foreach (SavedPlant plant in SqlDB.SavedplantList)
             {
                 Sqlconn.Open();
-                SqlCommand cmd = new SqlCommand("UPDATE savedplant_table SET num=" + "'" + plant.Count + "'" +
+                SqlCommand cmd = new SqlCommand("USE[weather_"+SqlDB.userid+ "];UPDATE savedplant_table SET num=" + "'" + plant.Count + "'" +
             " " + "WHERE plantName=" + "'" + plant.Name + "'", Sqlconn);
                 cmd.ExecuteNonQuery();
                 Sqlconn.Close();
@@ -228,7 +228,7 @@ public class VRMenuController : MonoBehaviour
         {
             SqlConnection Sqlconn = new SqlConnection(cspublic);
             Sqlconn.Open();
-            SqlCommand cmd = new SqlCommand("UPDATE player_table SET Coin=" + "'" + SqlDB.coin + "'" + ",WateringCanNum=" + "'" + SqlDB.wateringcanNum + "'", Sqlconn);
+            SqlCommand cmd = new SqlCommand("USE[weather_"+SqlDB.userid+"];UPDATE player_table SET Coin=" + "'" + SqlDB.coin + "'" + ",WateringCanNum=" + "'" + SqlDB.wateringcanNum + "'", Sqlconn);
             cmd.ExecuteNonQuery();
             Sqlconn.Close();
         }
@@ -238,7 +238,7 @@ public class VRMenuController : MonoBehaviour
             for (int i = 0; i < SqlDB.puzzleList.Count; i++)
             {
                 Sqlconn.Open();
-                SqlCommand cmd = new SqlCommand("UPDATE puzzle_table SET num=" + "'" + SqlDB.puzzleList[i] + "'" +
+                SqlCommand cmd = new SqlCommand("USE[weather_" + SqlDB.userid + "];UPDATE puzzle_table SET num=" + "'" + SqlDB.puzzleList[i] + "'" +
             " " + "WHERE name=" + "'" + i + "'", Sqlconn);
                 cmd.ExecuteNonQuery();
                 Sqlconn.Close();
@@ -255,23 +255,20 @@ public class VRMenuController : MonoBehaviour
                     Sqlconn.Open();
                     SqlCommand cmd;
 
-                    Debug.Log("fplant.Name: "+fplant.Name+"  fplant.master: "+fplant.master);
-
-
                     if (SqlDB.farmplantList.IndexOf(fplant) == 0)
                     {
-                        cmd = new SqlCommand("TRUNCATE table farmplant_table; INSERT INTO farmplant_table(Name, x, z, size,per,polluted,master) VALUES(" + fplant.Name + "," + fplant.x + "," + fplant.z + ","
+                        cmd = new SqlCommand("USE[weather]; TRUNCATE table farmplant_table; INSERT INTO farmplant_table(Name, x, z, size,per,polluted,master) VALUES(" + fplant.Name + "," + fplant.x + "," + fplant.z + ","
                             + fplant.size + "," + fplant.percent + "," + fplant.polluted + ",'" + fplant.master + "');", Sqlconn);
                     }
                     
                     else
                     {
-                        cmd = new SqlCommand("INSERT INTO farmplant_table(Name, x, z, size,per, polluted, master) VALUES(" + fplant.Name + "," + fplant.x + "," + fplant.z + "," + fplant.size + "," + fplant.percent + "," + fplant.polluted + "," + fplant.master + ");", Sqlconn);
+                        cmd = new SqlCommand("INSERT INTO farmplant_table(Name, x, z, size,per, polluted, master) VALUES(" + fplant.Name + "," + fplant.x + "," + fplant.z + "," + fplant.size + "," + fplant.percent + "," + fplant.polluted + ",'" + fplant.master + "');", Sqlconn);
                     }
-
                     cmd.ExecuteNonQuery();
                     Sqlconn.Close();
                 }
+
                 catch (Exception e)
                 {
                     Debug.Log(e.Message);

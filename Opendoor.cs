@@ -64,11 +64,11 @@ public class Opendoor : MonoBehaviour
 
                     if (Door.name == "StoreOutsideDoor")
                     {
-                        Doorcoordinate.transform.rotation = Quaternion.Euler(new Vector3(-182.187f, 180, 180));
+                        Doorcoordinate.transform.rotation = Quaternion.Euler(new Vector3(-182.187f, 360, 180));
                     }
                     else if(Door.name == "HouseOutsideDoor")
                     {
-                        Doorcoordinate.transform.rotation = Quaternion.Euler(new Vector3(-180, 180, 180));
+                        Doorcoordinate.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
                     }
                     opened = true;
                 }
@@ -84,11 +84,11 @@ public class Opendoor : MonoBehaviour
                 {
                     if (Door.name == "StoreOutsideDoor")
                     {
-                        Doorcoordinate.transform.rotation = Quaternion.Euler(new Vector3(-182.187f, 90, 180));
+                        Doorcoordinate.transform.rotation = Quaternion.Euler(new Vector3(-182.187f, 270, 180));
                     }
                     else if (Door.name == "HouseOutsideDoor")
                     {
-                        Doorcoordinate.transform.rotation = Quaternion.Euler(new Vector3(-180, 90, 180));
+                        Doorcoordinate.transform.rotation = Quaternion.Euler(new Vector3(0, 90, 0));
                     }
                     opened = false;
                 }

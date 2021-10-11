@@ -27,9 +27,8 @@ public class Opening : MonoBehaviour
         System.DateTime lastDateTime = System.DateTime.Parse(lastTime);
         System.TimeSpan compareTime = System.DateTime.Now - lastDateTime;
         lastMin = float.Parse(compareTime.TotalMinutes.ToString()); //지난 시간의 minute
-        Debug.Log("lastMin" + lastMin);
 
-        if (lastMin >= 1.0f) //lastMin/60>=48.0f (원래 코드 - 현재는 test용)
+        if (lastMin/60>=48.0f)
         {
             stepNum = 0;
             alarmPanel.SetActive(true);

@@ -69,7 +69,6 @@ public class Trash_Manager : MonoBehaviour
 
         for (int i = 0; i < GameObject.FindGameObjectsWithTag("Trash").Length; i++)
         {
-            Debug.Log(i);
             GameObject trash = GameObject.FindGameObjectsWithTag("Trash")[i];
             Vector3 randomposition = trashposition[Random.Range(0, trashposition.Count)];
             if (!vectorOfTrash.ContainsValue(randomposition))

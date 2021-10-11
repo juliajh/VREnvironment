@@ -22,14 +22,8 @@ public class pollutedMaking : MonoBehaviour
     private List<GameObject> badwaterList;
     private List<GameObject> badairList;
     private float sec;
-    private int waterSectrue;
-    private int airSectrue;
-    public static int activeBadWater; //used in VRTK_BezierPointerRenderer script 
-    private bool airWarning;
-    private int badairCount;
-    private bool airsizeUp;
-    public static int pollutedPercent;
-    private float lastMin;
+    private bool waterflag;
+    private bool airflag;
 
     // Start is called before the first frame update
     void Start()
@@ -43,138 +37,103 @@ public class pollutedMaking : MonoBehaviour
         {
             badwater.SetActive(false);
         }
+
         badairList = new List<GameObject>();
         for (int i = 0; i < badairParent.transform.childCount; i++)
+        {
             badairList.Add(badairParent.transform.GetChild(i).gameObject);
+        }
         foreach (GameObject badair in badairList)
-            badair.transform.localScale = new Vector3(0, 0, 0);
+        {
+            badair.SetActive(false);
+        }
+
         waterWarningImg.SetActive(false);
         airWarningImg.SetActive(false);
-        sec = float.Parse(DateTime.Now.ToString("ss"));
-        waterWarningImg.SetActive(false);
-        waterSectrue = 0;
-        airSectrue = 0;
-        activeBadWater = 0;
-        airSectrue = 0;
-        pollutedPercent = 0;
-        airWarning = false;
-        airsizeUp = true;
-        badairCount = 0;
-        lastMin = 0.0f;
-        badairParent.GetComponent<Animator>().enabled = true;
-       
-        //종료시점~시작시점까지의 polluted
-        string lastTime = PlayerPrefs.GetString("SaveLastTime");
-        System.DateTime lastDateTime = System.DateTime.Parse(lastTime);
-        System.TimeSpan compareTime = System.DateTime.Now - lastDateTime;
-        lastMin = float.Parse(compareTime.TotalMinutes.ToString()); //지난 시간의 minute
 
-        if(lastMin/60 >= 6.0f)
+
+        if (SqlDB.waterpolluted != 0)
         {
-            for(int i = 0; i < 30; i++)
+            for (int i = 0; i < SqlDB.waterpolluted; i++)
             {
                 badwaterList[i].SetActive(true);
-                activeBadWater++;
             }
-            foreach (GameObject badair in badairList)
+        }
+
+        float num = SqlDB.airpolluted / 3;
+
+        if (num >= 3)
+        {
+            for (int i = 0; i < Math.Truncate(num); i++)
             {
-                badair.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f); ///0.0005f 정도? 현재는 test용으로 빠르게 진행함.
+                badairList[i].SetActive(true);
             }
         }
 
     }
+
+    
 
     // Update is called once per frame
     void Update()
     {
-        sec = float.Parse(DateTime.Now.ToString("ss"));
+        sec = int.Parse(DateTime.Now.ToString("ss"));
 
-        //water polluted
-        if (sec % 4 == 0 && waterSectrue == 0)
-            waterSectrue = 1;
-        if (waterSectrue == 1)
+        if (sec % 8 == 0 && !waterflag)
         {
-            foreach (GameObject badwater in badwaterList)
+            SqlDB.waterpolluted += 1;
+
+            for (int i = 0; i < badwaterList.Count; i++)
             {
-                if (!badwater.activeSelf) //false일 때,
+                if (!badwaterList[i].activeSelf)
                 {
-                    badwater.SetActive(true);
-                    activeBadWater += 1;
-                    waterSectrue = 2;
+                    badwaterList[i].SetActive(true);
                     break;
                 }
             }
+            waterflag = true;
         }
-        if (sec % 4 == 1 && waterSectrue == 2)
-            waterSectrue = 0;
 
-        if (activeBadWater == badwaterList.Count - 30)
+        if (sec % 8 == 1)
+            waterflag = false; 
+
+        if (sec % 10 == 0 && !airflag) 
+        {
+            SqlDB.airpolluted += 1;
+
+            for (int i = 0; i < badairList.Count; i++)
+            {
+                if (!badairList[i].activeSelf)   //꺼져있는 것 하나만 찾아서 켜기
+                {
+                    badairList[i].SetActive(true);
+                    break;
+                }
+            }            
+
+            airflag = true;
+        }
+
+        if (sec % 10 == 1)
+            airflag = false; 
+
+
+        //warning
+        if (SqlDB.waterpolluted >=50)
         {
             waterWarningImg.SetActive(true);
         }
-        else if (activeBadWater < badwaterList.Count - 30)
+        else
+        {
             waterWarningImg.SetActive(false);
-
-
-        //air polluted
-        if (sec % 2 == 0 && airSectrue == 0)
-            airSectrue = 1;
-        if (airSectrue == 1)
-        {
-            foreach (GameObject badair in badairList)
-            {
-                if (badair.transform.localScale.x <= 1.2f)
-                    badair.transform.localScale += new Vector3(0.0005f, 0.0005f, 0.0005f); ///0.0005f 정도? 현재는 test용으로 빠르게 진행함.
-            }
-            airSectrue = 2;
         }
-        if (sec % 2 == 1 && airSectrue == 2)
-            airSectrue = 0;
 
-        //기준
-        badairCount = 0;
-        foreach (GameObject badair in badairList)
+        if (SqlDB.airpolluted >= 50)
         {
-            if (badair.transform.localScale.x >= 0.8f) 
-                badairCount += 1;
-        }
-        if (badairCount >= 3)
-        {
-            airWarning = true;
             airWarningImg.SetActive(true);
         }
         else
         {
-            airWarning = false;
             airWarningImg.SetActive(false);
         }
-
-        if ((badairCount + (activeBadWater / 10)) >= 13 && pollutedPercent!=4)
-        {
-            pollutedPercent = 3;
-        }
-        else if ((airWarningImg.activeSelf || waterWarningImg.activeSelf)&& pollutedPercent != 2)
-            pollutedPercent = 1;
-        else
-            pollutedPercent = 0;
-
-        /*
-        if (airMoving)
-        {
-            StartCoroutine(Going());
-            badairParent.GetComponent<Animator>().SetBool("moving", true);
-        }
-        */
     }
-
-    //마을로 badair 이동 
-    /*IEnumerator Going()
-    {
-        badairParent.GetComponent<Animator>().enabled = true;
-        yield return new WaitForSeconds(7.2f);
-        badairParent.GetComponent<Animator>().enabled = false;
-        airWarning = true;
-        airMoving = false;
-        airSectrue = 0;
-    }*/
 }

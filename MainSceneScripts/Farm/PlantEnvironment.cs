@@ -13,6 +13,8 @@ public class PlantEnvironment : MonoBehaviour
     private int plantName;
     private List<string> weathers = new List<string>();
     private float rain;
+    private int polluted;
+    private bool plantPolluted;
 
     [SerializeField]
     private GameObject Plants;
@@ -26,14 +28,14 @@ public class PlantEnvironment : MonoBehaviour
         cs = @"Data Source=DESKTOP-DHIREQV,1433;Initial Catalog=weather;User ID=sa;Password=dankook512@; ";
         FromSql();
         SQL_Plant();
-
+        plantPolluted = false;
     }
 
     public void FromSql()
     {
         SqlConnection Sqlconn = new SqlConnection(cs);
         Sqlconn.Open();
-        SqlCommand cmd = new SqlCommand("SELECT * FROM weather_table", Sqlconn);
+        SqlCommand cmd = new SqlCommand("USE[weather];SELECT * FROM weather_table", Sqlconn);
         SqlDataReader reader = cmd.ExecuteReader();
 
         while (reader.Read())
@@ -41,7 +43,15 @@ public class PlantEnvironment : MonoBehaviour
             weathers.Add(reader["weather"].ToString());
             if (reader["weather"].ToString() == "Rain")
                 rain += float.Parse(reader["rain"].ToString());
+            SqlDB.waterpolluted += int.Parse(reader["waterpolluted"].ToString());
+            SqlDB.airpolluted += int.Parse(reader["airpolluted"].ToString());
+
         }
+
+        if (SqlDB.airpolluted > 90)
+            SqlDB.airpolluted = 90;
+        if (SqlDB.waterpolluted > 90)
+            SqlDB.waterpolluted = 90;
 
         reader.Close();
         Sqlconn.Close();
@@ -50,9 +60,7 @@ public class PlantEnvironment : MonoBehaviour
     public void SQL_Plant()
     {
         foreach (string weather in weathers)
-        {
-            Debug.Log(weather);
-            
+        {   
             if (weather == "Rain")
             {
                 int rainPercent = ((int)Math.Ceiling(rain)) % 10;
@@ -81,6 +89,7 @@ public class PlantEnvironment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (SqlDB.readingDone && SqlDB.farmplantList != null)
         {
             //check every plant's percent all the time
@@ -92,6 +101,24 @@ public class PlantEnvironment : MonoBehaviour
             }
         }
 
+        polluted = SqlDB.airpolluted + SqlDB.waterpolluted;
+
+        if (((polluted >= 61) && (polluted <= 109)) || ((polluted >= 121) && (polluted <= 169)))
+            plantPolluted = false; 
+
+        if (!plantPolluted)
+        { 
+            if (((polluted >= 50) && (polluted <= 59)) || ((polluted >= 110) && (polluted <= 120)) || ((polluted >= 170) && (polluted <= 179)))
+            {
+                for (int i = 0; i < SqlDB.farmplantList.Count; i++)
+                {
+                    SqlDB.farmplantList[i].polluted += 1;
+                    pollutedPhase(Player.Plantobject[i]);
+                }
+            }
+        }
+
+        /*
         if (pollutedMaking.pollutedPercent % 2 == 1 && SqlDB.farmplantList != null)
         {
             //check every plant's percent when the polluted accur
@@ -101,6 +128,8 @@ public class PlantEnvironment : MonoBehaviour
             }
             pollutedMaking.pollutedPercent += 1;  //2 or 4 
         }
+        */
+        
     }
 
     private void growPlant(GameObject plant)
@@ -164,10 +193,7 @@ public class PlantEnvironment : MonoBehaviour
 
     private void pollutedPhase(GameObject plant)
     {
-        /*
-        SqlSave.farmplantList[Player.Plantobject.IndexOf(plant)].polluted += (pollutedMaking.pollutedPercent/2 + 1); //if polluted percent 1 : 0 + 1 = 1 / 1 + 1 = 2
-
-        if(SqlSave.farmplantList[Player.Plantobject.IndexOf(plant)].polluted == 1 )
+        if(SqlDB.farmplantList[Player.Plantobject.IndexOf(plant)].polluted == 1 )
         {
             int childnum = plant.transform.childCount;
             List<Material> materialList = new List<Material>();
@@ -180,14 +206,15 @@ public class PlantEnvironment : MonoBehaviour
                 materialList.Clear();
             }
         }
-        else if(SqlSave.farmplantList[Player.Plantobject.IndexOf(plant)].polluted >= 2)
+        else if(SqlDB.farmplantList[Player.Plantobject.IndexOf(plant)].polluted >= 2)
         {
             GameObject dirt = Instantiate(Resources.Load("Prefabs/Dirt"), plant.transform.position, Quaternion.identity) as GameObject;
             Destroy(plant);
-            SqlSave.farmplantList.RemoveAt(Player.Plantobject.IndexOf(plant));
+            SqlDB.farmplantList.RemoveAt(Player.Plantobject.IndexOf(plant));
             Player.Plantobject.Remove(plant);
         }
-        */
+
+        plantPolluted = true; 
     }
 
     private int Split_num(string name)

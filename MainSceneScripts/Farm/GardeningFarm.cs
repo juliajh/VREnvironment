@@ -34,9 +34,6 @@ public class GardeningFarm : MonoBehaviour
         wateringcan.SetActive(false);
         SqlDB.wateringcanNum--;
         SqlDB.farmplantList[Player.Plantobject.IndexOf(selectedplant)].percent += 10;
-
-
-
     }
 
 }

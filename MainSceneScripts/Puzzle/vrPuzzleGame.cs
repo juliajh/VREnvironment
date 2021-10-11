@@ -8,9 +8,6 @@ using UnityEngine.UI;
 
 public class vrPuzzleGame : MonoBehaviour
 {
-    /// <summary>
-    /// 주석 5개 친 것 (/////)은 올바른 코드이지만 StartGame을 써야 하므로 StartGame을 먼저 실행하지 않으면 오류가 발생하는 코드. 따라서 전체적으로 정비 되고 나면 주석 없애기.
-    /// </summary>
     [SerializeField]
     private GameObject allPuzzleParent; //바닥에 놓여진 puzzle들의 parent
 
@@ -147,7 +144,6 @@ public class vrPuzzleGame : MonoBehaviour
 
         if (puzzleInNum == 16)
         {
-            Debug.Log("pictNum" + SqlDB.pictNum);
             StartCoroutine(clearEffect(pictNum));
             //Clear.SetActive(true);
             if (pictNum == 7)

@@ -164,7 +164,6 @@ public class StoreManager : MonoBehaviour
 
     public void wateringcan()
     {
-        Debug.Log("watercan");
         if (SqlDB.coin >= 2)
         {
             SqlDB.coin = SqlDB.coin - 2;
