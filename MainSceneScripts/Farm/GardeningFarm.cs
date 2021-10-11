@@ -32,8 +32,8 @@ public class GardeningFarm : MonoBehaviour
         
         yield return new WaitForSeconds(3.0f);
         wateringcan.SetActive(false);
-        SqlSave.wateringcanNum--;
-        SqlSave.farmplantList[Player.Plantobject.IndexOf(selectedplant)].percent += 10;
+        SqlDB.wateringcanNum--;
+        SqlDB.farmplantList[Player.Plantobject.IndexOf(selectedplant)].percent += 10;
 
 
 

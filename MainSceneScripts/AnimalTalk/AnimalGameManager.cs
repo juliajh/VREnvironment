@@ -130,7 +130,7 @@ public class AnimalGameManager : MonoBehaviour
     //GivingPuzzle 수정. 
     IEnumerator GivingPuzzle()
     {
-        if (SqlSave.puzzleList[talkManager.listOfAnimalObject.IndexOf(animObj)] == 0)
+        if (SqlDB.puzzleList[talkManager.listOfAnimalObject.IndexOf(animObj)] == 0)
         {
             vrPuzzleGame.allPuzzleList[talkManager.listOfAnimalObject.IndexOf(animObj)].SetActive(true);
             vrPuzzleGame.puzzlepsList[talkManager.listOfAnimalObject.IndexOf(animObj)].SetActive(true);

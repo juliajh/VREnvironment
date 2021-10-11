@@ -103,8 +103,8 @@ public class vrPuzzleGame : MonoBehaviour
     {
         if (settingStart)
         {
-            pictNum = SqlSave.pictNum;
-            Debug.Log("pictNum" + SqlSave.pictNum);
+            pictNum = SqlDB.pictNum;
+            Debug.Log("pictNum" + SqlDB.pictNum);
             Setting(pictNum);
             settingStart = false;
         }
@@ -147,23 +147,23 @@ public class vrPuzzleGame : MonoBehaviour
 
         if (puzzleInNum == 16)
         {
-            Debug.Log("pictNum" + SqlSave.pictNum);
+            Debug.Log("pictNum" + SqlDB.pictNum);
             StartCoroutine(clearEffect(pictNum));
             //Clear.SetActive(true);
             if (pictNum == 7)
                 pictNum = 0;
             else
                 pictNum++;
-            SqlSave.pictNum = pictNum;
-            for (int i = 0; i < SqlSave.puzzleList.Count; i++)
-                SqlSave.puzzleList[i] = 0;
+            SqlDB.pictNum = pictNum;
+            for (int i = 0; i < SqlDB.puzzleList.Count; i++)
+                SqlDB.puzzleList[i] = 0;
             for (int k = 0; k < allPuzzleList.Count; k++)
             {
                 allPuzzleList[k].transform.position = puzzlesPositionList[k];
                 allPuzzleList[k].SetActive(true);
             }
             puzzleInNum = 0;
-            SqlSave.coin += 50;
+            SqlDB.coin += 50;
 
         }
     }
@@ -177,9 +177,9 @@ public class vrPuzzleGame : MonoBehaviour
             allPuzzleList[k].GetComponent<Collider>().enabled = true;
             puzzleinPanelList[k].SetActive(false);
         }
-        for (int i = 0;i<SqlSave.puzzleList.Count;i++)
+        for (int i = 0;i< SqlDB.puzzleList.Count;i++)
         {
-            if (SqlSave.puzzleList[i]==1)
+            if (SqlDB.puzzleList[i]==1)
             {
                 puzzleinPanelList[i].SetActive(true);
                 allPuzzleList[i].SetActive(false);
@@ -194,7 +194,7 @@ public class vrPuzzleGame : MonoBehaviour
         if (target != null && allPuzzleList.Contains(target))
         {
             targetNum = allPuzzleList.IndexOf(target);
-            SqlSave.puzzleList[targetNum] = 1;
+            SqlDB.puzzleList[targetNum] = 1;
             StartCoroutine(puzzleTimer(target));
             puzzlepsList[targetNum].SetActive(false);
             puzzleinPanelList[targetNum].SetActive(true); //이때, 기본적으로 puzzleinPanel 의 panel은 SetActive(false) 상태이어야 함! 

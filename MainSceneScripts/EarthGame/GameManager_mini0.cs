@@ -246,7 +246,7 @@ public class GameManager_mini0 : MonoBehaviour
         menualPanel.transform.GetChild(1).GetComponent<Text>().text = "참 잘했어!! 지구를 살려줘서 고마워!\n코인을 줄테니 마을을 잘 가꿔줘!";
         yield return new WaitForSeconds(5.5f);
         coin.SetActive(false);
-        SqlSave.coin += 20;
+        SqlDB.coin += 20;
         coinover = true;
     }
 

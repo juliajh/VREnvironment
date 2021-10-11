@@ -56,23 +56,23 @@ public class PlantEnvironment : MonoBehaviour
             if (weather == "Rain")
             {
                 int rainPercent = ((int)Math.Ceiling(rain)) % 10;
-                for (int i = 0; i < SqlSave.farmplantList.Count; i++)
+                for (int i = 0; i < SqlDB.farmplantList.Count; i++)
                 {
-                    SqlSave.farmplantList[i].percent += rainPercent;
+                    SqlDB.farmplantList[i].percent += rainPercent;
                 }
             }
             else if (weather == "Clear")
             {
-                for (int i = 0; i < SqlSave.farmplantList.Count; i++)
+                for (int i = 0; i < SqlDB.farmplantList.Count; i++)
                 {
-                    SqlSave.farmplantList[i].percent += 5;
+                    SqlDB.farmplantList[i].percent += 5;
                 }
             }
             else if (weather == "Cloud")
             {
-                for (int i = 0; i < SqlSave.farmplantList.Count; i++)
+                for (int i = 0; i < SqlDB.farmplantList.Count; i++)
                 {
-                    SqlSave.farmplantList[i].percent += 2;
+                    SqlDB.farmplantList[i].percent += 2;
                 }
             }
         }
@@ -81,21 +81,21 @@ public class PlantEnvironment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (SqlSave.readingDone && SqlSave.farmplantList != null)
+        if (SqlDB.readingDone && SqlDB.farmplantList != null)
         {
             //check every plant's percent all the time
-            for (int i = 0; i < SqlSave.farmplantList.Count; i++)
+            for (int i = 0; i < SqlDB.farmplantList.Count; i++)
             {
-                plantPercent = SqlSave.farmplantList[i].percent;
-                plantName = SqlSave.farmplantList[i].Name;
+                plantPercent = SqlDB.farmplantList[i].percent;
+                plantName = SqlDB.farmplantList[i].Name;
                 growPlant(Player.Plantobject[i]);
             }
         }
 
-        if (pollutedMaking.pollutedPercent % 2 == 1 && SqlSave.farmplantList != null)
+        if (pollutedMaking.pollutedPercent % 2 == 1 && SqlDB.farmplantList != null)
         {
             //check every plant's percent when the polluted accur
-            for (int i = 0; i < SqlSave.farmplantList.Count; i++)
+            for (int i = 0; i < SqlDB.farmplantList.Count; i++)
             {
                 pollutedPhase(Player.Plantobject[i]);
             }
@@ -114,7 +114,7 @@ public class PlantEnvironment : MonoBehaviour
                     GameObject newplant = Instantiate(Resources.Load("Prefabs/Plantings/Plant_" + plantName + "/Planting_" + plantName + "." + 2), plant.transform.position, Quaternion.identity) as GameObject;
                     Player.Plantobject[Player.Plantobject.IndexOf(plant)] = newplant;
                     Debug.Log("plantEnvironment's new plant in player.plantObject = " + Player.Plantobject[Player.Plantobject.IndexOf(newplant)]);
-                    SqlSave.farmplantList[Player.Plantobject.IndexOf(newplant)].size = 2;
+                    SqlDB.farmplantList[Player.Plantobject.IndexOf(newplant)].size = 2;
                     Destroy(plant);
                     newplant.transform.parent = Plants.transform.GetChild(plantName).transform;
                     newplant.transform.localScale = new Vector3(1, 1, 1);
@@ -131,7 +131,7 @@ public class PlantEnvironment : MonoBehaviour
                 {
                     GameObject newplant = Instantiate(Resources.Load("Prefabs/Plantings/Plant_" + plantName + "/Planting_" + plantName + "." + 3), plant.transform.position, Quaternion.identity) as GameObject;
                     Player.Plantobject[Player.Plantobject.IndexOf(plant)] = newplant;
-                    SqlSave.farmplantList[Player.Plantobject.IndexOf(newplant)].size = 3;
+                    SqlDB.farmplantList[Player.Plantobject.IndexOf(newplant)].size = 3;
                     Destroy(plant);
                     newplant.transform.parent = Plants.transform.GetChild(plantName).transform;
                     newplant.transform.localScale = new Vector3(1, 1, 1);
@@ -144,7 +144,7 @@ public class PlantEnvironment : MonoBehaviour
 
             else if(plantPercent>=90)
             {
-                SqlSave.farmplantList.Remove(SqlSave.farmplantList[Player.Plantobject.IndexOf(plant)]);
+                SqlDB.farmplantList.Remove(SqlDB.farmplantList[Player.Plantobject.IndexOf(plant)]);
                 Player.Plantobject.Remove(plant);
                 Destroy(plant);
 

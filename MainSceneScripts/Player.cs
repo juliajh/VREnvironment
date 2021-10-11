@@ -201,13 +201,13 @@ public class Player : MonoBehaviour
     {
         //yield return new WaitForSeconds(1f);
 
-        for (int i = 0; i < SqlSave.farmplantList.Count; i++)
+        for (int i = 0; i < SqlDB.farmplantList.Count; i++)
         {
-            string name = "Prefabs/Plantings/Plant_" + SqlSave.farmplantList[i].Name.ToString() + "/Planting_" + SqlSave.farmplantList[i].Name.ToString() + "." + SqlSave.farmplantList[i].size;
-            Vector3 position = new Vector3(SqlSave.farmplantList[i].x, -0.0068f, SqlSave.farmplantList[i].z);
+            string name = "Prefabs/Plantings/Plant_" + SqlDB.farmplantList[i].Name.ToString() + "/Planting_" + SqlDB.farmplantList[i].Name.ToString() + "." + SqlDB.farmplantList[i].size;
+            Vector3 position = new Vector3(SqlDB.farmplantList[i].x, -0.0068f, SqlDB.farmplantList[i].z);
             GameObject plant = Instantiate(Resources.Load<GameObject>(name), position, Quaternion.identity) as GameObject;
             Plantobject.Add(plant);
-            plant.transform.parent = GameObject.Find("Plant_" + SqlSave.farmplantList[i].Name.ToString()).transform;
+            plant.transform.parent = GameObject.Find("Plant_" + SqlDB.farmplantList[i].Name.ToString()).transform;
             plant.transform.tag = "Plant";
             plant.transform.localScale = new Vector3(1, 1, 1);
 

@@ -74,7 +74,7 @@ public class PlantingOnMain : MonoBehaviour
                     GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().offRtouchpad();
                     selectedPlantNum = int.Parse(target.name.Substring(target.name.LastIndexOf("_") + 1));
 
-                    if (SqlSave.SavedplantList[selectedPlantNum].Count > 0)
+                    if (SqlDB.SavedplantList[selectedPlantNum].Count > 0)
                     {
 
                         GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().RTriggerButtonLight();
@@ -87,8 +87,8 @@ public class PlantingOnMain : MonoBehaviour
                         planting = true;
                         target = null;
 
-                        plantMenu.transform.GetChild(selectedPlantNum + 1).GetChild(0).GetComponent<Text>().text = "X " + (SqlSave.SavedplantList[selectedPlantNum].Count - 1).ToString();
-                        SqlSave.SavedplantList[selectedPlantNum].Count--;
+                        plantMenu.transform.GetChild(selectedPlantNum + 1).GetChild(0).GetComponent<Text>().text = "X " + (SqlDB.SavedplantList[selectedPlantNum].Count - 1).ToString();
+                        SqlDB.SavedplantList[selectedPlantNum].Count--;
                         plantMenu.SetActive(false);
 
                     }
@@ -128,7 +128,7 @@ public class PlantingOnMain : MonoBehaviour
     {
         plant.SetActive(true);
         //plant 가 의미하는게 새로운 gameobject
-        SqlSave.farmplantList.Add(new FarmPlant(int.Parse(plant.name.Substring(plant.name.IndexOf("_")+1,1)), plant.transform.position.x, plant.transform.position.z, 1,0,0, AccountTest.userid));
+        SqlDB.farmplantList.Add(new FarmPlant(int.Parse(plant.name.Substring(plant.name.IndexOf("_")+1,1)), plant.transform.position.x, plant.transform.position.z, 1,0,0, SqlDB.userid));
         Player.Plantobject.Add(plant);
 
         plant = null;

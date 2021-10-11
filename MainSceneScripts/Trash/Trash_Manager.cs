@@ -161,9 +161,9 @@ public class Trash_Manager : MonoBehaviour
 
         if (finish)
         {
-            for(int i=0;i<SqlSave.farmplantList.Count;i++)
+            for(int i=0;i< SqlDB.farmplantList.Count;i++)
             {
-                Vector3 pos = new Vector3(SqlSave.farmplantList[i].x, 0, SqlSave.farmplantList[i].z);
+                Vector3 pos = new Vector3(SqlDB.farmplantList[i].x, 0, SqlDB.farmplantList[i].z);
                 ParticleSystem plantps = Instantiate(Resources.Load("Prefabs/ParticleSystems/PlantGrowingPs"), pos, Quaternion.identity) as ParticleSystem;
             }
 
@@ -173,8 +173,8 @@ public class Trash_Manager : MonoBehaviour
                 timer += Time.deltaTime;
             }
 
-            for(int i=0; i < SqlSave.farmplantList.Count; i++)
-                SqlSave.farmplantList[i].percent += 30;
+            for(int i=0; i < SqlDB.farmplantList.Count; i++)
+                SqlDB.farmplantList[i].percent += 30;
 
             finish = false;
         }

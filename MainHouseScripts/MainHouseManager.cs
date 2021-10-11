@@ -71,14 +71,14 @@ public class MainHouseManager : MonoBehaviour
             StartCoroutine(fadeout());
         }
 
-        if (SqlSave.readingDone)
+        if (SqlDB.readingDone)
         {
-            for (int i = 0; i < SqlSave.puzzleList.Count; i++)
+            for (int i = 0; i < SqlDB.puzzleList.Count; i++)
             {
-                if (SqlSave.puzzleList[i] == 1)
+                if (SqlDB.puzzleList[i] == 1)
                 {
                     puzzleinPanelList[i].SetActive(true);
-                    puzzleinPanelList[i].GetComponent<Image>().material = Datas[SqlSave.pictNum].mats[i];
+                    puzzleinPanelList[i].GetComponent<Image>().material = Datas[SqlDB.pictNum].mats[i];
                 }
             }
         }

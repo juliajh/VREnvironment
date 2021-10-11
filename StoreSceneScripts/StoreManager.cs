@@ -56,7 +56,7 @@ public class StoreManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SqlSave.coin = 100;
+        SqlDB.coin = 100;
         puzzleInPanel.SetActive(false);
         puzzleinPanelList = new List<GameObject>();
         for (int i = 0; i < puzzleInPanel.transform.childCount; i++)
@@ -64,11 +64,11 @@ public class StoreManager : MonoBehaviour
         for (int i = 0; i < puzzleinPanelList.Count; i++)
         {
             puzzleinPanelList[i].SetActive(false);
-            puzzleinPanelList[i].GetComponent<Image>().material = Datas[SqlSave.pictNum].mats[i];
+            puzzleinPanelList[i].GetComponent<Image>().material = Datas[SqlDB.pictNum].mats[i];
         }
-        for (int i = 0; i < SqlSave.puzzleList.Count; i++)
+        for (int i = 0; i < SqlDB.puzzleList.Count; i++)
         {
-            if (SqlSave.puzzleList[i] == 1)
+            if (SqlDB.puzzleList[i] == 1)
             {
                 puzzleinPanelList[i].SetActive(true);
             }
@@ -80,7 +80,7 @@ public class StoreManager : MonoBehaviour
         color = fadeinoutImg.GetComponent<Image>().color;
         fadeinoutImg.SetActive(true);
 
-        coinText.GetComponent<Text>().text = SqlSave.coin.ToString();
+        coinText.GetComponent<Text>().text = SqlDB.coin.ToString();
         panelAnim = alarmPanel.GetComponent<Animator>();
         audio = alarmPanel.transform.GetChild(1).GetComponent<AudioSource>();
         alarmPanel.SetActive(false);
@@ -112,10 +112,10 @@ public class StoreManager : MonoBehaviour
             target = rightController.transform.GetChild(0).GetComponent<VRTK.VRTK_StraightPointerRenderer>().getObj();
             if (buttonList.Contains(target))
             {
-                if (SqlSave.coin>=10)
+                if (SqlDB.coin>=10)
                 {
-                    SqlSave.coin = SqlSave.coin - 10;
-                    coinText.GetComponent<Text>().text = SqlSave.coin.ToString();
+                    SqlDB.coin = SqlDB.coin - 10;
+                    coinText.GetComponent<Text>().text = SqlDB.coin.ToString();
                     indexoftree = int.Parse(target.name.Substring(target.name.LastIndexOf("_") + 1));
                     GameObject selectedplant = plantmenuList[indexoftree];
                     
@@ -159,21 +159,21 @@ public class StoreManager : MonoBehaviour
         
         selectedplant.transform.GetChild(0).GetComponent<Text>().text = "X "+(numofplant + 1).ToString();
 
-        SqlSave.SavedplantList[indexoftree].Count++;
+        SqlDB.SavedplantList[indexoftree].Count++;
     }
 
     public void wateringcan()
     {
         Debug.Log("watercan");
-        if (SqlSave.coin >= 2)
+        if (SqlDB.coin >= 2)
         {
-            SqlSave.coin = SqlSave.coin - 2;
+            SqlDB.coin = SqlDB.coin - 2;
             string text = WateringcanText.GetComponent<Text>().text;
             int numofcan = int.Parse(text.Substring(text.LastIndexOf(" ") + 1));
             WateringcanText.GetComponent<Text>().text = "X " + (numofcan + 1).ToString();
-            coinText.GetComponent<Text>().text = SqlSave.coin.ToString();
+            coinText.GetComponent<Text>().text = SqlDB.coin.ToString();
 
-            SqlSave.wateringcanNum++;
+            SqlDB.wateringcanNum++;
         }
         else
         {

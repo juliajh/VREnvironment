@@ -34,7 +34,7 @@ public class userCollider : MonoBehaviour
             {
                 Debug.Log("crop eat");
                 collision.gameObject.SetActive(false);
-                SqlSave.coin += 30;
+                SqlDB.coin += 30;
                 coinpanel.GetComponent<Animation>().Play("Coin");
                 coinpanel.GetComponent<AudioSource>().clip = Resources.Load("Audios/success") as AudioClip;
                 coinpanel.GetComponent<AudioSource>().Play();

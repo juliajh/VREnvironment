@@ -57,16 +57,16 @@ public class VRMenuController : MonoBehaviour
     void Update()
     {
 
-        if (SqlSave.readingDone)
+        if (SqlDB.readingDone)
         {
-            CoinPanel.transform.GetChild(0).GetComponent<Text>().text = SqlSave.coin.ToString();
-            wateringcanText.GetComponent<Text>().text = "X " + SqlSave.wateringcanNum.ToString();
+            CoinPanel.transform.GetChild(0).GetComponent<Text>().text = SqlDB.coin.ToString();
+            wateringcanText.GetComponent<Text>().text = "X " + SqlDB.wateringcanNum.ToString();
 
-            if (SqlSave.SavedplantList.Count == 6)
+            if (SqlDB.SavedplantList.Count == 6)
             {
                 for (int i = 0; i < BagPlantTextList.Count; i++)
                 {
-                    BagPlantTextList[i].GetComponent<Text>().text = "X " + SqlSave.SavedplantList[i].Count.ToString();
+                    BagPlantTextList[i].GetComponent<Text>().text = "X " + SqlDB.SavedplantList[i].Count.ToString();
                 }
             }
         }
@@ -158,7 +158,7 @@ public class VRMenuController : MonoBehaviour
         {
             if (!wateringpot.activeSelf)
             {
-                if (SqlSave.wateringcanNum > 0)
+                if (SqlDB.wateringcanNum > 0)
                 {
                     wateringpot.gameObject.SetActive(true);
                     PlantCanvas.SetActive(false);
@@ -215,7 +215,7 @@ public class VRMenuController : MonoBehaviour
         if (p == "sql_savedplant")
         {
             SqlConnection Sqlconn = new SqlConnection(cspublic);
-            foreach (SavedPlant plant in SqlSave.SavedplantList)
+            foreach (SavedPlant plant in SqlDB.SavedplantList)
             {
                 Sqlconn.Open();
                 SqlCommand cmd = new SqlCommand("UPDATE savedplant_table SET num=" + "'" + plant.Count + "'" +
@@ -228,17 +228,17 @@ public class VRMenuController : MonoBehaviour
         {
             SqlConnection Sqlconn = new SqlConnection(cspublic);
             Sqlconn.Open();
-            SqlCommand cmd = new SqlCommand("UPDATE player_table SET Coin=" + "'" + SqlSave.coin + "'" + ",WateringCanNum=" + "'" + SqlSave.wateringcanNum + "'", Sqlconn);
+            SqlCommand cmd = new SqlCommand("UPDATE player_table SET Coin=" + "'" + SqlDB.coin + "'" + ",WateringCanNum=" + "'" + SqlDB.wateringcanNum + "'", Sqlconn);
             cmd.ExecuteNonQuery();
             Sqlconn.Close();
         }
         else if (p == "sql_puzzle")
         {
             SqlConnection Sqlconn = new SqlConnection(cspublic);
-            for (int i = 0; i < SqlSave.puzzleList.Count; i++)
+            for (int i = 0; i < SqlDB.puzzleList.Count; i++)
             {
                 Sqlconn.Open();
-                SqlCommand cmd = new SqlCommand("UPDATE puzzle_table SET num=" + "'" + SqlSave.puzzleList[i] + "'" +
+                SqlCommand cmd = new SqlCommand("UPDATE puzzle_table SET num=" + "'" + SqlDB.puzzleList[i] + "'" +
             " " + "WHERE name=" + "'" + i + "'", Sqlconn);
                 cmd.ExecuteNonQuery();
                 Sqlconn.Close();
@@ -248,7 +248,7 @@ public class VRMenuController : MonoBehaviour
         {
             SqlConnection Sqlconn = new SqlConnection(cspublic);
 
-            foreach (FarmPlant fplant in SqlSave.farmplantList)
+            foreach (FarmPlant fplant in SqlDB.farmplantList)
             {
                 try
                 {
@@ -258,7 +258,7 @@ public class VRMenuController : MonoBehaviour
                     Debug.Log("fplant.Name: "+fplant.Name+"  fplant.master: "+fplant.master);
 
 
-                    if (SqlSave.farmplantList.IndexOf(fplant) == 0)
+                    if (SqlDB.farmplantList.IndexOf(fplant) == 0)
                     {
                         cmd = new SqlCommand("TRUNCATE table farmplant_table; INSERT INTO farmplant_table(Name, x, z, size,per,polluted,master) VALUES(" + fplant.Name + "," + fplant.x + "," + fplant.z + ","
                             + fplant.size + "," + fplant.percent + "," + fplant.polluted + ",'" + fplant.master + "');", Sqlconn);
