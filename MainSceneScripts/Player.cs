@@ -244,7 +244,7 @@ public class Player : MonoBehaviour
         }
         yield return null;
 
-        if (MainHouseManager.mainsceneIn && !StoreManager.mainsceneIn && stepNum == -1)
+        if (SqlDB.firstUser && !StoreManager.mainsceneIn && stepNum == -1)
         {
             stepNum = 0;
             alarmPanel.SetActive(true);
@@ -252,7 +252,7 @@ public class Player : MonoBehaviour
             ani.Play("openingStart");
             alarmaudio.clip = Resources.Load("Audios/openMainScene") as AudioClip;
             alarmaudio.Play();
-            MainHouseManager.mainsceneIn = false;
+            SqlDB.firstUser = false;
             //start = false;
             StartCoroutine(waitForSoundEnd(alarmaudio.clip));
         }

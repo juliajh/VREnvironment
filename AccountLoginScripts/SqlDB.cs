@@ -77,27 +77,80 @@ public class SqlDB : MonoBehaviour
 
     //for VRMenuController
     public static bool readingDone;
+    public static bool firstUser = false;
 
     private GameObject player;
+    private List<Vector3> characterPosition = new List<Vector3>();
+    private List<Vector3> characterRotation = new List<Vector3>();
 
+    private bool charChoose;
+    private int selectedCharNum;
 
     // Start is called before the first frame update
     void Start()
     {
+        characterPosition = new List<Vector3>();
+        characterRotation = new List<Vector3>();
         accounts = new List<string>();
         characters = new List<GameObject>();
+
+        characterPosition.Add(new Vector3(13.7f, -3.95f, -3.11f));
+        characterPosition.Add(new Vector3(8f, -3.95f, -11.1f));
+        characterPosition.Add(new Vector3(21.65f, -3.95f, 1.87f));
+        characterPosition.Add(new Vector3(-7.74f, -3.95f, -11.54f));
+        characterPosition.Add(new Vector3(2.17f, -3.95f, -9.22f));
+
+        characterRotation.Add(new Vector3(0, -90f, 0));
+        characterRotation.Add(new Vector3(0, 0, 0));
+        characterRotation.Add(new Vector3(0, -90f, 0));
+        characterRotation.Add(new Vector3(0, 90f, 0));
+        characterRotation.Add(new Vector3(0, 49.21f, 0));
+
         StartCoroutine(getAccounts());
+
+        charChoose = false;
+        selectedCharNum = -1;
     }
 
     void Update()
     {
         if (characters.Count > 0)
         {
-            for (int k = 0; k < characters.Count; k++)
+            if (!charChoose && selectedCharNum < 0)
             {
-                if (Vector3.Distance(cameraRig.transform.position, characters[k].transform.position) < 3.7f)
+                for (int k = 0; k < characters.Count; k++)
                 {
-                    StartCoroutine(Login(accounts[k]));
+                    if (Vector3.Distance(cameraRig.transform.position, characters[k].transform.position) < 2.5f)
+                    {
+                        selectedCharNum = k;
+                        charChoose = true;
+                    }
+                }
+            }
+
+            else if(charChoose && selectedCharNum>0)
+            {
+                for (int k = 0; k < characters.Count; k++)
+                {
+                    if (k != selectedCharNum)
+                    {
+                        Destroy(characters[k]);
+                    }
+                    else
+                    {
+                        if (userid == accounts[k])
+                        {
+                            this.GetComponent<Opening>().enabled = true;
+                            firstUser = true;
+                        }
+                        else
+                        {
+                            this.GetComponent<Opening>().enabled = false;
+                            firstUser = false;
+                        }
+                        selectedCharNum = -1;
+                        StartCoroutine(Login(accounts[k]));
+                    }
                 }
             }
         }
@@ -122,7 +175,6 @@ public class SqlDB : MonoBehaviour
                         accounts.Add(name.Substring(name.IndexOf("_") + 1));
                     }
                 }
-
                 reader.Close();
             }
             Sqlconn.Close();
@@ -132,6 +184,7 @@ public class SqlDB : MonoBehaviour
         {
             for (int i = 0; i < accounts.Count; i++)
             {
+                player = null;
                 int num = 0;
                 using (SqlConnection Sqlconn = new SqlConnection())
                 {
@@ -148,15 +201,13 @@ public class SqlDB : MonoBehaviour
 
                         reader.Close();
                         Sqlconn.Close();
-
-
                     }
                 }
-
-                player = Instantiate(Resources.Load<GameObject>("Prefabs/characters/character_" + num), new Vector3(4 * i, 0, 11), Quaternion.identity) as GameObject;
-                player.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
+                player = Instantiate(Resources.Load<GameObject>("Prefabs/characters/character_" + num), characterPosition[i], Quaternion.identity) as GameObject;
+                player.transform.rotation = Quaternion.Euler(characterRotation[i]);
                 player.transform.GetChild(0).GetComponent<TextMesh>().text = accounts[i];
                 characters.Add(player);
+                player.transform.parent = GameObject.Find("characters").transform;
             }
         }
         yield return null;
@@ -165,6 +216,7 @@ public class SqlDB : MonoBehaviour
     IEnumerator Login(string playerName)
     {
         userid = playerName;
+        GameObject charPS = Instantiate(Resources.Load<GameObject>("Prefabs/ParticleSystems/characterPS"), characters[accounts.IndexOf(userid)].transform.position, Quaternion.identity) as GameObject;
         using (SqlConnection Sqlconn = new SqlConnection())
         {
             Sqlconn.ConnectionString = cspublic;
@@ -190,10 +242,9 @@ public class SqlDB : MonoBehaviour
                 yield return StartCoroutine(DBParsing("sql_puzzle"));
                 yield return StartCoroutine(DBParsing("sql_farmplant"));
                 readingDone = true;
-                SceneManager.LoadScene("MainHouse");
             }
         }
-        yield return null;
+        yield return new WaitForSeconds(2f);
     }
 
 
@@ -285,7 +336,7 @@ public class SqlDB : MonoBehaviour
                 Debug.Log(e);
             }
         }
-        yield return new WaitForSeconds(1.5f);
+        yield return null;
     }
 
 }

@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mono.Data.SqliteClient;
 using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Mono.Data.SqliteClient;
-using System.IO;
 using System.Data;
 using UnityEngine.UI;
 using System.Data.SqlClient;
@@ -28,9 +23,6 @@ public class Account : MonoBehaviour
     private Text infoText;
 
     [SerializeField]
-    private GameObject charText;
-
-    [SerializeField]
     private GameObject characterPanel;
 
     [SerializeField]
@@ -43,20 +35,18 @@ public class Account : MonoBehaviour
 
     private int characterNum = 0;
     private bool succeed;
-    private bool rayHit;
-    private GameObject target;
 
     // Start is called before the first frame update
     void Start()
     {
         uiPanel.SetActive(false);
         characterPanel.SetActive(true);
-        charText.SetActive(true);
         succeed = true;
     }
 
     void Update()
     {
+        /*
         rayHit = rightController.transform.GetChild(0).GetComponent<VRTK.VRTK_StraightPointerRenderer>().getrayHit();
         if (rayHit)
         {
@@ -96,7 +86,7 @@ public class Account : MonoBehaviour
                     target = null;
                 }
             }
-        }
+        }*/
            
     }
 
@@ -104,7 +94,6 @@ public class Account : MonoBehaviour
     {
         characterNum = num;
         uiPanel.SetActive(true);
-        charText.SetActive(false);
         characterPanel.SetActive(false);
     }
 
@@ -116,60 +105,73 @@ public class Account : MonoBehaviour
     IEnumerator AccountEnter()
     {
         SqlDB.userid = id_Text.text;
-
-        SqlConnection Sqlconn;
-        SqlCommand cmd;
-        using (Sqlconn = new SqlConnection())
+        if (this.GetComponent<SqlDB>().accounts.Count < 4)
         {
-            Sqlconn.ConnectionString = cspublic;
 
-            try
+            SqlConnection Sqlconn;
+            SqlCommand cmd;
+            using (Sqlconn = new SqlConnection())
             {
-                Sqlconn.Open();
+                Sqlconn.ConnectionString = cspublic;
 
-                cmd = new SqlCommand("CREATE DATABASE weather_" + SqlDB.userid + ";", Sqlconn);
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    Sqlconn.Open();
 
-                //make tables for user
-                cmd = new SqlCommand("USE weather_" + SqlDB.userid + ";" +
-                    "CREATE TABLE savedplant_table(plantName smallint, num smallint); " +
-                    "CREATE TABLE player_table(character smallint not null, Coin smallint not null, WateringCanNum smallint not null);" +
-                    " CREATE TABLE puzzle_table(name smallint not null, num smallint not null);", Sqlconn);
-                cmd.ExecuteNonQuery();
+                    cmd = new SqlCommand("CREATE DATABASE weather_" + SqlDB.userid + ";", Sqlconn);
+                    cmd.ExecuteNonQuery();
 
-                //set default
-                cmd = new SqlCommand("INSERT INTO savedplant_table VALUES(1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0)", Sqlconn);
-                cmd.ExecuteNonQuery();
-                cmd = new SqlCommand("INSERT INTO player_table VALUES(" + characterNum + ",100,0)", Sqlconn);
-                cmd.ExecuteNonQuery();
-                cmd = new SqlCommand("INSERT INTO puzzle_table VALUES(0,0),(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0),(11,0)" +
-                    ",(12,0),(13,0),(14,0),(15,0),(16,0)", Sqlconn);
-                cmd.ExecuteNonQuery();
+                    //make tables for user
+                    cmd = new SqlCommand("USE weather_" + SqlDB.userid + ";" +
+                        "CREATE TABLE savedplant_table(plantName smallint, num smallint); " +
+                        "CREATE TABLE player_table(character smallint not null, Coin smallint not null, WateringCanNum smallint not null);" +
+                        " CREATE TABLE puzzle_table(name smallint not null, num smallint not null);", Sqlconn);
+                    cmd.ExecuteNonQuery();
 
-                Sqlconn.Close();
-                succeed = true;
+                    //set default
+                    cmd = new SqlCommand("INSERT INTO savedplant_table VALUES(1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0)", Sqlconn);
+                    cmd.ExecuteNonQuery();
+                    cmd = new SqlCommand("INSERT INTO player_table VALUES(" + characterNum + ",100,0)", Sqlconn);
+                    cmd.ExecuteNonQuery();
+                    cmd = new SqlCommand("INSERT INTO puzzle_table VALUES(0,0),(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0),(11,0)" +
+                        ",(12,0),(13,0),(14,0),(15,0),(16,0)", Sqlconn);
+                    cmd.ExecuteNonQuery();
+
+                    Sqlconn.Close();
+                    succeed = true;
+                }
+                catch (Exception e)
+                {
+                    succeed = false;
+                }
+                if (!succeed)
+                {
+                    infoText.text = "닉네임을 다시 설정해주세요.";
+                    SqlDB.userid = "";
+                    id_Text.text = "";
+                }
+                else
+                {
+                    characterPanel.SetActive(false);
+                    infoText.text = "닉네임을 생성했습니다.\n본인의 캐릭터를 찾아가서\n게임을 시작해보세요!";
+                    GameObject player = Instantiate(Resources.Load<GameObject>("Prefabs/characters/character_" + characterNum), new Vector3(8.7f, -3.95f, 2), Quaternion.identity) as GameObject;
+                    player.transform.parent = GameObject.Find("characters").transform;
+                    player.transform.rotation = Quaternion.Euler(new Vector3(0, 180f, 0));
+                    player.transform.GetChild(0).GetComponent<TextMesh>().text = id_Text.text;
+                    this.GetComponent<SqlDB>().characters.Add(player);
+                    this.GetComponent<SqlDB>().accounts.Add(id_Text.text);
+                    SqlDB.userid = id_Text.text;
+
+                }
             }
-            catch (Exception e)
-            {
-                succeed = false;
-            }
-            if(!succeed)
-            {
-                infoText.text = "닉네임을 다시 설정해주세요.";
-                SqlDB.userid = "";
-                id_Text.text = "";
-            }
-            else
-            {
-                infoText.text = "닉네임을 생성했습니다.\n본인의 캐릭터를 찾아가서\n게임을 시작해보세요!";
-                GameObject player = Instantiate(Resources.Load<GameObject>("Prefabs/characters/character_" + characterNum), new Vector3(characterPanel.transform.position.x, 0, characterPanel.transform.position.z), Quaternion.identity) as GameObject;
-                player.transform.rotation = Quaternion.Euler(new Vector3(0, -90f, 0));
-                player.transform.GetChild(0).GetComponent<TextMesh>().text = id_Text.text;
-                this.GetComponent<SqlDB>().characters.Add(player);
-                this.GetComponent<SqlDB>().accounts.Add(id_Text.text);
-            }
-
         }
+        else
+        {
+            infoText.text = "계정이 너무 많습니다.";
+        }
+        uiPanel.SetActive(false);
+
+
         yield return null;
     }
 

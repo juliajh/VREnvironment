@@ -23,7 +23,7 @@ public class MainHouseManager : MonoBehaviour
 
 
     public MaterialData[] Datas;
-    public static bool mainsceneIn = true;
+    //public static bool mainsceneIn = true;
     private List<GameObject> puzzleinPanelList;
     private bool checkbool;
     private Color color;
@@ -35,6 +35,7 @@ public class MainHouseManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        /*
         if (!mainsceneIn)
         {
             Destroy(GameObject.Find("HouseManager").GetComponent<Opening>());
@@ -43,7 +44,7 @@ public class MainHouseManager : MonoBehaviour
         else
         {
             GameObject.Find("HouseManager").GetComponent<Opening>().enabled = true;
-        }
+        }*/
         puzzleInPanel.SetActive(false);
         wateringcan.SetActive(false);
         puzzleinPanelList = new List<GameObject>();
@@ -89,15 +90,14 @@ public class MainHouseManager : MonoBehaviour
             if (checkbool)
             {
                 SceneManager.LoadScene("MainScene");
-                //checkbool = false;
             }
         }
     }
     IEnumerator fadein()  
     { //fadeinoutImg 활성화
         fadeinoutImg.SetActive(true);
-        if(GameObject.Find("HouseManager").GetComponent<Opening>()!=null)
-            GameObject.Find("HouseManager").GetComponent<Opening>().alarmPanel.SetActive(false);
+        //if(GameObject.Find("HouseManager").GetComponent<Opening>()!=null)
+        //    GameObject.Find("HouseManager").GetComponent<Opening>().alarmPanel.SetActive(false);
         for (int i = 150; i >= 0; i--)
         {
             color.a += Time.deltaTime * 0.015f; 

@@ -17,31 +17,29 @@ public class Opening : MonoBehaviour
     private AudioSource audio;
     private int stepNum = 0;
     private bool audioflag = false;
-    private float lastMin;
+    //private float lastMin;
 
     // Start is called before the first frame update
     void Start()
     {
         alarmPanel.SetActive(false);
+        /*
         string lastTime = PlayerPrefs.GetString("SaveLastTime");
         System.DateTime lastDateTime = System.DateTime.Parse(lastTime);
         System.TimeSpan compareTime = System.DateTime.Now - lastDateTime;
-        lastMin = float.Parse(compareTime.TotalMinutes.ToString()); //지난 시간의 minute
+        lastMin = float.Parse(compareTime.TotalMinutes.ToString()); //지난 시간의 minute*/
 
-        if (lastMin/60>=48.0f)
-        {
-            stepNum = 0;
-            alarmPanel.SetActive(true);
-            panelAnim = alarmPanel.GetComponent<Animator>();
-            panelAnim.SetBool("talking", true);
-            audio = alarmPanel.transform.GetChild(1).GetComponent<AudioSource>();
+        stepNum = 0;
+        alarmPanel.SetActive(true);
+        panelAnim = alarmPanel.GetComponent<Animator>();
+        panelAnim.SetBool("talking", true);
+        audio = alarmPanel.transform.GetChild(1).GetComponent<AudioSource>();
 
-            alarmPanel.transform.GetChild(1).GetComponent<Text>().text = "안녕하세요 저는 우주라고 해요.\n저희 마을에 오신 것을 환영해요.\n저희 마을은 푸른 나무도 많고\n예쁜 꽃들도 많은 살기 좋은 마을이에요.\n" +
-                "다만 요즈음 환경 오염이 심해져서\n다들 걱정이 많아요...\n 저를 도와 마을을 정화시켜 주세요!\n(다음으로 넘기려면 흰색 버튼을 누르세요.)";
-            audio.clip = Resources.Load("Audios/opening") as AudioClip;
-            audio.Play();
-            StartCoroutine(waitForSoundEnd(audio.clip));
-        }
+        alarmPanel.transform.GetChild(1).GetComponent<Text>().text = "안녕하세요 저는 우주라고 해요.\n저희 마을에 오신 것을 환영해요.\n저희 마을은 푸른 나무도 많고\n예쁜 꽃들도 많은 살기 좋은 마을이에요.\n" +
+            "다만 요즈음 환경 오염이 심해져서\n다들 걱정이 많아요...\n 저를 도와 마을을 정화시켜 주세요!\n(다음으로 넘기려면 흰색 버튼을 누르세요.)";
+        audio.clip = Resources.Load("Audios/opening") as AudioClip;
+        audio.Play();
+        StartCoroutine(waitForSoundEnd(audio.clip));
     }
 
     // Update is called once per frame
