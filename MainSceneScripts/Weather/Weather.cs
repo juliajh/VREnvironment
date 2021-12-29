@@ -32,7 +32,7 @@ public class Weather : MonoBehaviour
     IEnumerator GetWeather(string city)
     {
         city = UnityWebRequest.EscapeURL(city);
-        string url = "http://api.openweathermap.org/data/2.5/weather?q=Seoul&units=metric&appid=d460267b64764a562cefa65c56368ece";
+        string url = keys.weatherkey;
 
         UnityWebRequest www = UnityWebRequest.Get(url);
         yield return www.SendWebRequest();

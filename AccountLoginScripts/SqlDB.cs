@@ -53,9 +53,9 @@ public class SqlDB : MonoBehaviour
 
     public List<GameObject> characters;
     public List<string> accounts;
-    public string cspublic = @"Data Source=DESKTOP-DHIREQV,1433;Initial Catalog=weather;User ID=sa;Password=dankook512@;";
+    public string cspublic = keys.cspublic;
     public static string userid = "";
-    private bool succeed=true;
+    private bool succeed = true;
 
     //player table variables
     public static int coin;
@@ -128,7 +128,7 @@ public class SqlDB : MonoBehaviour
                 }
             }
 
-            else if(charChoose && selectedCharNum>0)
+            else if (charChoose && selectedCharNum > 0)
             {
                 for (int k = 0; k < characters.Count; k++)
                 {

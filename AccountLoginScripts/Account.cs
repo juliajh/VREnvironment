@@ -31,7 +31,7 @@ public class Account : MonoBehaviour
     [SerializeField]
     private InputField idInput;
 
-    public string cspublic = @"Data Source=DESKTOP-DHIREQV,1433;Initial Catalog=weather;User ID=sa;Password=dankook512@;";
+    public string cspublic = keys.cspublic;
 
     private int characterNum = 0;
     private bool succeed;
@@ -87,7 +87,7 @@ public class Account : MonoBehaviour
                 }
             }
         }*/
-           
+
     }
 
     public void chooseChar(int num)

@@ -43,14 +43,14 @@ public class VRMenuController : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    { 
+    {
         PlantCanvas.SetActive(false);
         CoinPanel.SetActive(false);
         puzzleCanvas.SetActive(false);
         wateringpot.SetActive(false);
         menupanel.SetActive(false);
 
-        cspublic = @"Data Source=DESKTOP-DHIREQV,1433;Initial Catalog=weather;User ID=sa;Password=dankook512@; ";
+        cspublic = keys.cspublic;
     }
 
     // Update is called once per frame
@@ -80,13 +80,13 @@ public class VRMenuController : MonoBehaviour
             {
                 menupanel.SetActive(true);
                 Move.SetActive(false);
-               // GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().LtouchpadLight();
+                // GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().LtouchpadLight();
             }
             else
             {
                 Move.SetActive(true);
                 menupanel.SetActive(false);
-               // GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().Off(1);
+                // GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().Off(1);
                 PlantCanvas.SetActive(false);
                 puzzleCanvas.SetActive(false);
                 CoinPanel.SetActive(false);
@@ -109,12 +109,12 @@ public class VRMenuController : MonoBehaviour
                 PlantCanvas.SetActive(true);
                 puzzleCanvas.SetActive(false);
                 CoinPanel.SetActive(false);
-                
-                if(SceneManager.GetActiveScene().name=="MainScene")
+
+                if (SceneManager.GetActiveScene().name == "MainScene")
                     GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().RtouchpadLight();
             }
         }
-        
+
 
     }
 
@@ -131,7 +131,7 @@ public class VRMenuController : MonoBehaviour
                 CoinPanel.SetActive(true);
                 puzzleCanvas.SetActive(false);
                 PlantCanvas.SetActive(false);
-               // GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().Off(5);
+                // GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().Off(5);
             }
         }
     }
@@ -140,13 +140,13 @@ public class VRMenuController : MonoBehaviour
     {
         if (puzzleCanvas.activeSelf)
             puzzleCanvas.SetActive(false);
-        else 
+        else
         {
-            if(!wateringpot.activeSelf)
+            if (!wateringpot.activeSelf)
             {
                 puzzleCanvas.SetActive(true);
                 PlantCanvas.SetActive(false);
-             //   GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().Off(5);
+                //   GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().Off(5);
                 CoinPanel.SetActive(false);
             }
         }
@@ -164,7 +164,7 @@ public class VRMenuController : MonoBehaviour
                     PlantCanvas.SetActive(false);
                     CoinPanel.SetActive(false);
                     puzzleCanvas.SetActive(false);
-                 //   GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().Off(5);
+                    //   GameObject.Find("VR_Manager").GetComponent<ControllerGuide>().Off(5);
 
                 }
             }
@@ -193,7 +193,7 @@ public class VRMenuController : MonoBehaviour
         //delete weather_table elements 
         SqlConnection Sqlconn = new SqlConnection(cspublic);
         Sqlconn.Open();
-        SqlCommand cmd = new SqlCommand("USE[weather];TRUNCATE TABLE weather_table;INSERT INTO weather_table(weather,rain,waterpolluted,airpolluted) VALUES('Clouds',0,"+SqlDB.waterpolluted+","+SqlDB.airpolluted+");", Sqlconn);
+        SqlCommand cmd = new SqlCommand("USE[weather];TRUNCATE TABLE weather_table;INSERT INTO weather_table(weather,rain,waterpolluted,airpolluted) VALUES('Clouds',0," + SqlDB.waterpolluted + "," + SqlDB.airpolluted + ");", Sqlconn);
         cmd.ExecuteNonQuery();
         Sqlconn.Close();
 
@@ -202,13 +202,13 @@ public class VRMenuController : MonoBehaviour
         Application.Quit();
     }
 
-    
+
     private void onDestroy()
     {
         PlayerPrefs.SetString("SaveLastTime", System.DateTime.Now.ToString());
         //Debug.Log("종료 시간 : " + System.DateTime.Now.ToString());
     }
-    
+
 
     IEnumerator SaveDb(string p)
     {
@@ -218,7 +218,7 @@ public class VRMenuController : MonoBehaviour
             foreach (SavedPlant plant in SqlDB.SavedplantList)
             {
                 Sqlconn.Open();
-                SqlCommand cmd = new SqlCommand("USE[weather_"+SqlDB.userid+ "];UPDATE savedplant_table SET num=" + "'" + plant.Count + "'" +
+                SqlCommand cmd = new SqlCommand("USE[weather_" + SqlDB.userid + "];UPDATE savedplant_table SET num=" + "'" + plant.Count + "'" +
             " " + "WHERE plantName=" + "'" + plant.Name + "'", Sqlconn);
                 cmd.ExecuteNonQuery();
                 Sqlconn.Close();
@@ -228,7 +228,7 @@ public class VRMenuController : MonoBehaviour
         {
             SqlConnection Sqlconn = new SqlConnection(cspublic);
             Sqlconn.Open();
-            SqlCommand cmd = new SqlCommand("USE[weather_"+SqlDB.userid+"];UPDATE player_table SET Coin=" + "'" + SqlDB.coin + "'" + ",WateringCanNum=" + "'" + SqlDB.wateringcanNum + "'", Sqlconn);
+            SqlCommand cmd = new SqlCommand("USE[weather_" + SqlDB.userid + "];UPDATE player_table SET Coin=" + "'" + SqlDB.coin + "'" + ",WateringCanNum=" + "'" + SqlDB.wateringcanNum + "'", Sqlconn);
             cmd.ExecuteNonQuery();
             Sqlconn.Close();
         }
@@ -260,7 +260,7 @@ public class VRMenuController : MonoBehaviour
                         cmd = new SqlCommand("USE[weather]; TRUNCATE table farmplant_table; INSERT INTO farmplant_table(Name, x, z, size,per,polluted,master) VALUES(" + fplant.Name + "," + fplant.x + "," + fplant.z + ","
                             + fplant.size + "," + fplant.percent + "," + fplant.polluted + ",'" + fplant.master + "');", Sqlconn);
                     }
-                    
+
                     else
                     {
                         cmd = new SqlCommand("INSERT INTO farmplant_table(Name, x, z, size,per, polluted, master) VALUES(" + fplant.Name + "," + fplant.x + "," + fplant.z + "," + fplant.size + "," + fplant.percent + "," + fplant.polluted + ",'" + fplant.master + "');", Sqlconn);
@@ -275,7 +275,7 @@ public class VRMenuController : MonoBehaviour
                 }
 
             }
-            
+
             yield return new WaitForSeconds(0.2f);
         }
 
