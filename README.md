@@ -7,6 +7,10 @@
 
 가상생태계 모델을 기반으로 하여 환경 요인간의 인과관계와 시공간적 연계와 지속적인 상태를 유지하고 있습니다. <br>
 사용자는 가상에서 환경 요인에 관련된 인터랙션에 따른 결과를 경험하면서 환경 문제를 직관적으로 인식하고 해결 방법에 대한 동기부여를 받습니다.
+
+# Design of Implementation of an Immersive Virtual Reality Simulation for Environmental Education
+: Developed an immersive virtual reality-based environmental education simulation designed to help students recognize the importance of environmental education and participate in environmental-friendly actions. 
+
 <br><br>
 <img src="https://user-images.githubusercontent.com/54497150/196206760-be03922c-1ecc-49e0-93e6-fc063145362a.png" width=600px height=500px/>
 <img src="https://user-images.githubusercontent.com/54497150/196206769-15db0518-a122-4a33-97f9-76dec2636089.png" width=600px height=505px/>
