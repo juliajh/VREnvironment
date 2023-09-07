@@ -37,4 +37,6 @@
 <br>
 
 ## 📃 Paper
-http://koreascience.or.kr/article/JAKO202212462669744.page
+박주희,부재희,박경신,Park Ju Hee,Boo Jae Hui,and Park Kyoung Shin. "몰입적 환경교육 가상현실 시뮬레이션 설계 및 구현." 한국정보통신학회논문지 26.4 (2022): 541-547.
+<br>
+[http://koreascience.or.kr/article/JAKO202212462669744.page](https://www.researchgate.net/profile/Kyoung-Park-3/publication/361576960_Design_and_Development_of_an_Immersive_Virtual_Reality_Simulation_for_Environmental_Education/links/62ba63d25e258e67e10af657/Design-and-Development-of-an-Immersive-Virtual-Reality-Simulation-for-Environmental-Education.pdf)https://www.researchgate.net/profile/Kyoung-Park-3/publication/361576960_Design_and_Development_of_an_Immersive_Virtual_Reality_Simulation_for_Environmental_Education/links/62ba63d25e258e67e10af657/Design-and-Development-of-an-Immersive-Virtual-Reality-Simulation-for-Environmental-Education.pdf
